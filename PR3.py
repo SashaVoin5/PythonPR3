@@ -23,7 +23,7 @@ def create (thread_num):
 
 list_tread : List[threading.Thread] = []
 for i in range(8):
-    thread = threading.Thread(target=create, args=(i,))
+    thread = threading.Thread(target=create, args=(i,)) #Надо было работать с процессом, а не с потоком.Но почему-то при работе с процессом даже не запускается скрипт.
     thread.start()
     list_tread.append(thread)
 [thread.join() for thread in list_tread]
