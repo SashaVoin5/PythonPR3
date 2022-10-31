@@ -1,33 +1,9 @@
-import threading
+import multiprocessing
 from RandomWordGenerator import RandomWord
 import os
 from random import randint
 from typing import List
-
-def create (thread_num):
-    r = randint(100000, 5000000)
-    Random = RandomWord()
-    Random.constant_word_size = False
-    tread=str(thread_num)
-    name=str(os.getpid())
-    file = open("C:/test/files/"+"thread-"+tread+"-"+ name+".txt", "a")
-    for w in range(r):
-        file.write(f'{Random.generate()}\n')
-    file.close()
-    print(f"File numb{thread_num} is create")
-    path="C:/test/files/"+"thread-"+tread+"-"+ name+".txt"
-    check(path)
-
-
-
-
-list_tread : List[threading.Thread] = []
-for i in range(8):
-    thread = threading.Thread(target=create, args=(i,)) #Надо было работать с процессом, а не с потоком.Но почему-то при работе с процессом даже не запускался скрипт.
-    thread.start()
-    list_tread.append(thread)
-[thread.join() for thread in list_tread]
-
+from multiprocessing import Process
 
 def length(named):
     file = open(named, 'r')
@@ -129,7 +105,7 @@ def repetitions(named: str):
 
 def check(path):
     print(f"********************************************************\n"
-          f"  Analize for file {file}\n"
+          f"  Analize for file {path}\n"
           f"********************************************************\n"
           f"1. All sim --> {total(path)}\n" +
           f"2. Max len word --> {maxlength(path)}\n" +
@@ -139,3 +115,32 @@ def check(path):
           f"6. number of consonant --> {consonant(path)}\n" +
           "7. Number of repetitions of words with the same length:\n" +
           f"{repetitions(path)} \n")
+
+def create (thread_num):
+    r = randint(100000, 5000000)
+    Random = RandomWord()
+    Random.constant_word_size = False
+    tread=str(thread_num)
+    name=str(os.getpid())
+    file = open("C:/test/files/"+"thread-"+tread+"-"+ name+".txt", "a")
+    for w in range(r):
+        file.write(f'{Random.generate()}\n')
+    file.close()
+    print(f"File numb {thread_num} is create")
+    path="C:/test/files/"+"thread-"+tread+"-"+ name+".txt"
+    check(path)
+
+
+
+
+if __name__ == '__main__':
+    list_process: List[Process] = []
+    for i in range(8):
+        m: Process = Process(target=create, args = (i,))
+        list_process.append(m)
+        m.start()
+    for i in range(8):
+        list_process[i].join()
+
+
+
